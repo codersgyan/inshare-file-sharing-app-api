@@ -1,0 +1,7 @@
+Download page.
+<% if(typeof fileSize !== 'undefined') { %>
+<%= parseInt(fileSize/1000) %>KB
+<a href="http://localhost:3000/files/download/5f3b7f174a751d48a3df2da1">Download file</a>
+<% } else { %>
+<%= error %>
+<% } %>
