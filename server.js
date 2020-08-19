@@ -4,15 +4,28 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require('cors');
+// Cors 
+const corsOptions = {
+    origin: process.env.ALLOWED_CLIENTS.split(','),
+  }
+app.use(cors(corsOptions))
 
-// Database connection 
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.5w0oz.mongodb.net/${process.env.DB_NAME}>?retryWrites=true&w=majority`;
-mongoose.connect(url, { useNewUrlParser: true, useCreateIndex:true, useUnifiedTopology: true, useFindAndModify : true });
+// Default configuration looks like
+// {
+//     "origin": "*",
+//     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     "preflightContinue": false,
+//     "optionsSuccessStatus": 204
+//   }
+
+// Database connection 🥳
+mongoose.connect(process.env.MONGO_CONNECTION_URL, { useNewUrlParser: true, useCreateIndex:true, useUnifiedTopology: true, useFindAndModify : true });
 const connection = mongoose.connection;
 connection.once('open', () => {
-    console.log('Database connected...');
+    console.log('Database connected 🥳🥳🥳🥳');
 }).catch(err => {
-    console.log('Connection failed...')
+    console.log('Connection failed ☹️☹️☹️☹️');
 });
 
 app.use(express.json());
