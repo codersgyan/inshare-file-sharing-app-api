@@ -23,7 +23,7 @@ router.get('/download/:uuid', async (req, res) => {
    } 
    file.downloaded = true;
    const response = await file.save();
-   const filePath = `${__dirname}/../${file.path}`;
+   const filePath = `../${file.path}`;
    res.download(filePath);
 });
 
