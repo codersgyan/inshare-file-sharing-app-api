@@ -14,7 +14,7 @@ router.get('/:uuid', async (req, res) => {
     }
 });
 
-router.get('/files/download/:uuid', async (req, res) => {
+router.get('/download/:uuid', async (req, res) => {
    // Extract link and get file from storage send download stream 
    const file = await File.findOne({ uuid: req.params.uuid });
    // Link expired
