@@ -12,12 +12,12 @@ let storage = multer.diskStorage({
     } ,
 });
 
-let upload = multer({ storage }).single('myfile');
+let upload = multer({ storage, limits:{ fileSize: 1000000 * 100 }, }).single('myfile'); //100mb
 
 router.post('/', (req, res) => {
     upload(req, res, async (err) => {
       if (err) {
-        return res.status(500).send({ error: 'Something went wrong.'});
+        return res.status(500).send({ error: err.message });
       }
         const file = new File({
             filename: req.file.filename,
@@ -38,6 +38,9 @@ router.post('/send', async (req, res) => {
   // Get data from db 
   try {
     const file = await File.findOne({ uuid: uuid });
+    if(file.sender) {
+      return res.status(422).send({ error: 'Email already sent once.'});
+    }
     file.sender = emailFrom;
     file.receiver = emailTo;
     const response = await file.save();
@@ -50,9 +53,9 @@ router.post('/send', async (req, res) => {
       text: `${emailFrom} shared a file with you.`,
       html: require('../services/emailTemplate')({
                 emailFrom, 
-                downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}` ,
-                size: file.size/1000 + 'KB',
-                expires: '24 Aug 2020'
+                downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}?source=email` ,
+                size: parseInt(file.size/1000) + ' KB',
+                expires: '24 hours'
             })
     }).then(() => {
       return res.json({success: true});

@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
 // Cors 
@@ -10,6 +9,7 @@ const corsOptions = {
     origin: process.env.ALLOWED_CLIENTS.split(','),
   }
 app.use(cors(corsOptions))
+app.use(express.static('public'));
 
 // Default configuration looks like
 // {
@@ -19,14 +19,8 @@ app.use(cors(corsOptions))
 //     "optionsSuccessStatus": 204
 //   }
 
-// Database connection 🥳
-mongoose.connect(process.env.MONGO_CONNECTION_URL, { useNewUrlParser: true, useCreateIndex:true, useUnifiedTopology: true, useFindAndModify : true });
-const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log('Database connected 🥳🥳🥳🥳');
-}).catch(err => {
-    console.log('Connection failed ☹️☹️☹️☹️');
-});
+const connectDB = require('./config/db');
+connectDB();
 
 app.use(express.json());
 
