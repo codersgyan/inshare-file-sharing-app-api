@@ -18,6 +18,7 @@ async function fetchData() {
             }
         }
     }
+    console.log('Job done!');
 }
 
 fetchData().then(process.exit);
