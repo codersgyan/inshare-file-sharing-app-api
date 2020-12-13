@@ -39,6 +39,13 @@ app.use("/api/files", require("./routes/files"));
 app.use("/files", require("./routes/show"));
 app.use("/files/download", require("./routes/download"));
 
+// Serve static assests in production
+app.use("/", express.static("public/frontend"));
+
+app.get("*", (req, res) =>
+  res.sendFile(path.resolve(__dirname, "public", "frontend", "index.html"))
+);
+
 // Setting a cron job
 // (* * * * * *) => (second (optional), minute, hour, day of month, month, day of week)
 cron.schedule("0 0 */23 * * *", () => {
